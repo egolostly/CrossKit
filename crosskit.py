@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 
 APP = "CrossKit"
-VERSION = "1.6.2"
+VERSION = "1.6.3"
 
 ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 UI = ROOT / "ui" / "index.html"
@@ -170,6 +170,11 @@ class OverlayProcess:
             self._post({"cmd": "hide"})
         self.visible = False
 
+    def toggle(self):
+        """Hide/show without forgetting the image, like Ctrl+Shift+H."""
+        if self.visible and self.proc and self.proc.poll() is None:
+            self._post({"cmd": "toggle"})
+
     def stop(self):
         self._stopped = True
         proc, self.proc = self.proc, None
@@ -180,6 +185,73 @@ class OverlayProcess:
                 proc.wait(timeout=2)
             except (OSError, subprocess.TimeoutExpired):
                 proc.kill()
+
+
+# -- tray icon ---------------------------------------------------------------
+
+class Tray:
+    """Icon in the notification area ("hidden icons") on Windows.
+
+    Closing the window while the overlay is on hides the app here instead of
+    quitting. Needs pystray + Pillow; without them CrossKit falls back to
+    minimizing to the taskbar.
+    """
+
+    def __init__(self, on_open, on_toggle, on_quit):
+        self.icon = None
+        self._told = False
+        if os.name != "nt":
+            return
+        try:
+            import pystray
+            from PIL import Image
+        except ImportError:
+            return
+
+        try:
+            image = Image.open(ICON)
+        except OSError:
+            image = Image.new("RGBA", (64, 64), (76, 194, 255, 255))
+
+        menu = pystray.Menu(
+            pystray.MenuItem("Open CrossKit", lambda: on_open(), default=True),
+            pystray.MenuItem("Hide / show overlay  (Ctrl+Shift+H)", lambda: on_toggle()),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Quit", lambda: on_quit()),
+        )
+        self.icon = pystray.Icon(APP, image, APP, menu)
+        threading.Thread(target=self.icon.run, daemon=True).start()
+
+    @property
+    def available(self):
+        return self.icon is not None
+
+    def tell_once(self):
+        # first time only, so people know where the app went
+        if self.icon is None or self._told:
+            return
+        self._told = True
+        try:
+            self.icon.notify("Still running here so the overlay stays on screen. "
+                             "Right-click the icon to quit.", APP)
+        except Exception:  # notifications are a nice-to-have
+            pass
+
+    def stop(self):
+        if self.icon is not None:
+            try:
+                self.icon.stop()
+            except Exception:
+                pass
+            self.icon = None
+
+
+def bring_to_front():
+    hwnd = main_hwnd()
+    if hwnd:
+        user32 = ctypes.windll.user32
+        user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+        user32.SetForegroundWindow(hwnd)
 
 
 # -- api exposed to the page -------------------------------------------------
@@ -277,7 +349,8 @@ class Api:
     def quit(self):
         self._quitting = True
         self._overlay.stop()
-        self._window.destroy()
+        if self._window:
+            self._window.destroy()
 
 
 # -- window ------------------------------------------------------------------
@@ -396,10 +469,24 @@ def main():
     )
     api._window = window
 
+    def open_window():
+        window.show()
+        if os.name == "nt":
+            bring_to_front()
+
+    def quit_app():
+        api.quit()
+
+    tray = Tray(open_window, overlay.toggle, quit_app)
+
     def on_closing():
-        # with the overlay on, closing just tucks the app away in the taskbar
+        # with the overlay on, closing tucks the app away instead of quitting
         if overlay.visible and not api._quitting:
-            threading.Timer(0.05, window.minimize).start()
+            if tray.available:
+                threading.Timer(0.05, window.hide).start()
+                tray.tell_once()
+            else:
+                threading.Timer(0.05, window.minimize).start()
             return False
         return True
 
@@ -411,6 +498,7 @@ def main():
         webview.start()
     finally:
         overlay.stop()
+        tray.stop()
 
 
 if __name__ == "__main__":

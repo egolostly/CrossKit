@@ -4,7 +4,7 @@
 
 **Crosshair editor, pro library and screen overlay – in one small desktop app.**
 
-![Version](https://img.shields.io/badge/version-1.6.2-4cc2ff?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.6.3-4cc2ff?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20macOS%20%7C%20linux-1d2028?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT%20%2B%20attribution-22c55e?style=flat-square)
@@ -60,7 +60,7 @@ No account, no telemetry, no installer – your data stays in one JSON file in y
 - Your editor crosshair, **17 shapes** or your own image
 - Stick figure with an exact **head aim point**
 - Optional hide-while-aiming (right mouse button)
-- Global <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> toggle; keeps running when the window is closed
+- Global <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> toggle; hides to the system tray when you close the window
 
 </td>
 <td width="50%" valign="top">
@@ -110,7 +110,7 @@ On Linux, pywebview also needs GTK or Qt – see the [pywebview installation gui
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --windowed --name CrossKit --icon ui/icon.ico --add-data "ui;ui" --hidden-import overlay crosskit.py
+pyinstaller --onefile --windowed --name CrossKit --icon ui/icon.ico --add-data "ui;ui" --hidden-import overlay --hidden-import pystray._win32 crosskit.py
 ```
 
 The executable lands in `dist/`. On macOS and Linux use `:` instead of `;` in `--add-data`.
@@ -159,7 +159,7 @@ Shapes come in any color, size and line thickness, with an optional black outlin
 - **Aim with the head** (stick figure) moves the figure so its head – not its body – sits exactly on the screen centre, at any size
 - **Hide while holding right click** makes the overlay vanish while you aim down sights
 - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> hides or shows it from anywhere, even in game
-- Closing the window while the overlay is on only drops CrossKit to the taskbar; **Quit** on the overlay page closes everything
+- Closing the window while the overlay is on hides CrossKit to the **system tray** (the hidden icons next to the clock). Click the icon to bring it back, right-click for *Hide / show overlay* and *Quit*. **Quit** on the overlay page closes everything too
 
 The overlay is a plain transparent window. It never touches game files or memory and doesn't inject anything. It shows up over games running in **borderless** or **windowed** mode – exclusive fullscreen draws above every other window.
 
@@ -263,7 +263,7 @@ The UI is plain HTML, CSS and JavaScript – no build step, no framework. Python
 ## Roadmap
 
 - [ ] Overlay on macOS and Linux
-- [ ] System tray icon
+- [x] System tray icon
 - [ ] Custom overlay hotkey
 - [ ] ADS and sniper crosshair editing
 - [ ] Community library submissions

@@ -119,7 +119,9 @@ class Overlay:
         if cmd == "quit":
             self.root.destroy()
             return False
-        if cmd == "hide":
+        if cmd == "toggle":  # same as the Ctrl+Shift+H hotkey, sent from the tray menu
+            self.hotkey_hidden = not self.hotkey_hidden
+        elif cmd == "hide":
             self.wanted = False
         elif cmd == "show":
             self.image = tk.PhotoImage(data=msg["png"])
