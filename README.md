@@ -1,8 +1,8 @@
 <div align="center">
 
-# CrossKit
+<img src="assets/banner.png" alt="CrossKit – crosshair editor, pro library and screen overlay" width="100%">
 
-**Crosshair editor, pro library and screen overlay – in one small desktop app.**
+<br>
 
 ![Version](https://img.shields.io/badge/version-1.6.3-4cc2ff?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)
@@ -24,6 +24,10 @@
 CrossKit is a small desktop app for everything crosshair. Build one in a live editor, stress-test it with simulated spray and movement, borrow a crosshair from 187 pro players, look up the DPI and sensitivity of 245 pros, and copy the share code straight into your game. When the game can't draw what you want, the **screen overlay** puts your crosshair, a custom shape or any image on top of your screen.
 
 No account, no telemetry, no installer – your data stays in one JSON file in your home folder.
+
+<div align="center">
+<img src="assets/screenshot.png" alt="CrossKit editor" width="900">
+</div>
 
 ## Features
 
@@ -85,6 +89,10 @@ No account, no telemetry, no installer – your data stays in one JSON file in y
 </tr>
 </table>
 
+<div align="center">
+<img src="assets/demo.gif" alt="Editing a crosshair in CrossKit" width="780">
+</div>
+
 ## Quick start
 
 ### Download
@@ -98,8 +106,8 @@ Grab `CrossKit.exe` from the **[latest release](../../releases/latest)** and run
 Requires Python 3.9 or newer.
 
 ```bash
-git clone https://github.com/egolostly/crosskit.git
-cd crosskit
+git clone https://github.com/egolostly/CrossKit.git
+cd CrossKit
 pip install -r requirements.txt
 python crosskit.py
 ```
@@ -127,9 +135,17 @@ To go the other way, copy a code in game and press <kbd>Ctrl</kbd>+<kbd>V</kbd> 
 
 ### Library
 
+<div align="center">
+<img src="assets/library.png" alt="Crosshair library" width="860">
+</div>
+
 Shape categories are worked out from each crosshair automatically, so new entries land in the right place without manual tagging. Hover a card and click the star to add it to **Favorites**.
 
 ## Pro settings
+
+<div align="center">
+<img src="assets/pros.png" alt="Pro settings page" width="860">
+</div>
 
 DPI, sensitivity, eDPI and cm/360 for **245 pro players**, each with the month it was last confirmed.
 
@@ -145,6 +161,10 @@ cm/360 = 360 / (eDPI × 0.07) × 2.54
 ```
 
 ## Screen overlay
+
+<div align="center">
+<img src="assets/overlay.png" alt="Screen overlay page" width="860">
+</div>
 
 Open the **Overlay** page, choose a source and switch on **Show on screen**.
 
@@ -221,7 +241,7 @@ Single-file PyInstaller builds are a common false positive because of how they u
 <summary><b>Where is my data stored?</b></summary>
 <br>
 
-Saved crosshairs, favorites, your mouse setup and overlay settings live in `~/.crosskit.json`. PNG exports go to `~/Pictures/CrossKit`. Delete the JSON file to reset everything.
+Saved crosshairs, favorites, your mouse setup and overlay settings live in `~/.crosskit.json`. That includes an overlay image you picked – it never leaves your computer and isn't part of the app or the repo. PNG exports go to `~/Pictures/CrossKit`. Delete the JSON file to reset everything.
 </details>
 
 ## How share codes work
@@ -256,6 +276,7 @@ ui/pros.js         pro settings page
 ui/overlay.js      overlay page and shape drawing
 ui/app.js          editor, library and saved pages
 ui/icon.ico        app and exe icon
+assets/            images used in this README
 ```
 
 The UI is plain HTML, CSS and JavaScript – no build step, no framework. Python hosts it in a native window through [pywebview](https://pywebview.flowershow.app/) and handles files, the clipboard and the overlay process.
