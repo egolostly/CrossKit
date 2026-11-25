@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrossKit</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6M10 3.5v5.5L7 13h10l-3-4V3.5M12 13v7.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></symbol>
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4 16.5v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-5-5-9 9"/></symbol>
+  <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r=".6"/><circle cx="15.5" cy="15.5" r=".6"/><circle cx="12" cy="12" r=".6"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4"/></symbol>
+  <symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12.5" rx="2"/><path d="M9 20.5h6M12 17v3.5M12 8v5.5M9.25 10.75h5.5"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3.5v8M7 6.3a7.5 7.5 0 1 0 10 0"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h1M10.5 10h1M14.5 10h1M6.5 14h11"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8.5 6.5h12M8.5 12h12M8.5 17.5h12M4 6.5h.5M4 12h.5M4 17.5h.5"/></symbol>
+  <symbol id="i-mouse" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v3.5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+</svg>
+
+<aside class="side">
+  <div class="brand">
+    <svg viewBox="0 0 512 512" class="logo">
+      <defs>
+        <linearGradient id="lg-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#252a37"/><stop offset="1" stop-color="#111318"/></linearGradient>
+        <linearGradient id="lg-ac" gradientUnits="userSpaceOnUse" x1="96" y1="96" x2="416" y2="416"><stop offset="0" stop-color="#7ce9ff"/><stop offset="1" stop-color="#3a7bff"/></linearGradient>
+      </defs>
+      <rect x="16" y="16" width="480" height="480" rx="116" fill="url(#lg-bg)" stroke="#ffffff22" stroke-width="6"/>
+      <g fill="none" stroke="url(#lg-ac)" stroke-width="22" stroke-linecap="round" opacity=".55">
+        <path d="M385.8 203.6A140 140 0 0 0 308.4 126.2"/><path d="M203.6 126.2A140 140 0 0 0 126.2 203.6"/>
+        <path d="M126.2 308.4A140 140 0 0 0 203.6 385.8"/><path d="M308.4 385.8A140 140 0 0 0 385.8 308.4"/>
+      </g>
+      <g fill="url(#lg-ac)">
+        <rect x="243" y="96" width="26" height="92" rx="13"/><rect x="243" y="324" width="26" height="92" rx="13"/>
+        <rect x="96" y="243" width="92" height="26" rx="13"/><rect x="324" y="243" width="92" height="26" rx="13"/>
+        <circle cx="256" cy="256" r="17"/>
+      </g>
+    </svg>
+    <div><b>CrossKit</b><small>Crosshair editor</small></div>
+  </div>
+
+  <nav class="nav">
+    <button data-page="editor" class="on"><svg><use href="#i-target"/></svg>Editor</button>
+    <button data-page="library"><svg><use href="#i-grid"/></svg>Library</button>
+    <button data-page="pros"><svg><use href="#i-mouse"/></svg>Pro settings</button>
+    <button data-page="saved"><svg><use href="#i-bookmark"/></svg>Saved<span class="count" id="saved-count">0</span></button>
+    <button data-page="overlay"><svg><use href="#i-screen"/></svg>Overlay<i class="live-dot"></i></button>
+  </nav>
+
+  <div class="side-foot">
+    <button class="pin" id="pin" title="Keep the window above other apps">
+      <svg><use href="#i-pin"/></svg><span>Always on top</span><i class="switch"></i>
+    </button>
+    <div class="side-meta">
+      <span class="version" id="version">v1.6.2</span>
+      <button class="icon-btn" id="btn-keys" title="Keyboard shortcuts (?)"><svg><use href="#i-keyboard"/></svg></button>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <!-- editor -->
+  <section class="page on" id="page-editor">
+    <div class="editor">
+      <div class="stage-col">
+        <div class="stage" id="stage">
+          <canvas id="view"></canvas>
+          <div class="stage-top">
+            <span class="badge" id="size-note">Real in-game size</span>
+            <div class="seg" id="zoom-pick" title="Preview zoom">
+              <button data-zoom="1" class="on">Real</button>
+              <button data-zoom="2">2×</button>
+              <button data-zoom="4">4×</button>
+            </div>
+          </div>
+          <div class="stage-bottom">
+            <span class="hint"><kbd>Space</kbd> or hold click to fire<span class="move"> &nbsp;·&nbsp; <kbd>WASD</kbd> to move</span></span>
+            <div class="meter"><i id="spread"></i></div>
+          </div>
+        </div>
+
+        <div class="codebar">
+          <code class="mono" id="code">0</code>
+          <button class="btn ghost icon" id="btn-png" title="Save preview as PNG"><svg><use href="#i-image"/></svg></button>
+          <button class="btn ghost" id="btn-import"><svg><use href="#i-import"/></svg><span>Import</span></button>
+          <button class="btn ghost" id="btn-save"><svg><use href="#i-save"/></svg><span>Save</span></button>
+          <button class="btn primary" id="btn-copy"><svg><use href="#i-copy"/></svg>Copy code</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="tabs" id="tabs">
+          <button data-tab="general" class="on">General</button>
+          <button data-tab="inner">Inner lines</button>
+          <button data-tab="outer">Outer lines</button>
+        </div>
+        <div class="controls" id="controls"></div>
+        <div class="panel-foot">
+          <button class="btn ghost" id="btn-random"><svg><use href="#i-dice"/></svg>Random</button>
+          <button class="btn ghost" id="btn-reset"><svg><use href="#i-reset"/></svg>Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- library -->
+  <section class="page" id="page-library">
+    <header class="head">
+      <div>
+        <h1>Library</h1>
+        <p id="lib-sub">Crosshairs used by pros, plus some clean starting points.</p>
+      </div>
+      <div class="head-tools">
+        <label class="search"><svg><use href="#i-search"/></svg><input id="lib-search" placeholder="Search name, team or style"></label>
+      </div>
+    </header>
+    <div class="chips" id="lib-filter">
+      <button data-f="all" class="on">All</button>
+      <button data-f="fav"><svg><use href="#i-star"/></svg>Favorites</button>
+      <button data-f="Pro">Pros</button>
+      <button data-f="Starter">Starters</button>
+      <button data-f="Dot">Dot</button>
+      <button data-f="Cross">Cross</button>
+      <button data-f="Cross + dot">Cross + dot</button>
+      <button data-f="Dynamic">Dynamic</button>
+    </div>
+    <div class="cards" id="library"></div>
+  </section>
+
+  <!-- pro settings -->
+  <section class="page" id="page-pros">
+    <header class="head">
+      <div>
+        <h1>Pro settings</h1>
+        <p id="pro-sub">DPI and sensitivity of pro players.</p>
+      </div>
+      <div class="head-tools">
+        <label class="search"><svg><use href="#i-search"/></svg><input id="pro-search" placeholder="Search player or team"></label>
+      </div>
+    </header>
+
+    <div class="pro-top">
+      <div class="stats" id="pro-stats"></div>
+      <div class="you">
+        <div class="you-head">
+          <b>Your setup</b>
+          <span class="faint" id="you-verdict"></span>
+        </div>
+        <div class="you-body">
+          <label class="field"><span>DPI</span><input id="you-dpi" type="number" min="50" max="32000" step="50"></label>
+          <label class="field"><span>Sens</span><input id="you-sens" type="number" min="0" max="10" step="0.01"></label>
+          <div class="you-out"><span>eDPI</span><b id="you-edpi">–</b></div>
+          <div class="you-out"><span>cm/360</span><b id="you-cm">–</b></div>
+        </div>
+        <div class="spread" id="you-spread" title="How pro eDPI is spread out, 0 to 600"></div>
+      </div>
+    </div>
+
+    <div class="chips" id="pro-filter">
+      <button data-f="all" class="on">All</button>
+      <button data-f="400">400 DPI</button>
+      <button data-f="800">800 DPI</button>
+      <button data-f="1600">1600 DPI</button>
+      <button data-f="other">Other DPI</button>
+      <button data-f="code">With crosshair</button>
+    </div>
+
+    <div class="pro-wrap" id="pro-wrap">
+      <table class="pro-table">
+        <thead>
+          <tr>
+            <th data-k="name">Player</th>
+            <th data-k="dpi" class="n">DPI</th>
+            <th data-k="sens" class="n">Sens</th>
+            <th data-k="edpi" class="n">eDPI</th>
+            <th data-k="cm" class="n">cm/360</th>
+            <th data-k="mine" class="n" title="The sens that feels the same with your DPI. Click a value to copy it.">At your DPI</th>
+            <th data-k="seen">Checked</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="pro-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- saved -->
+  <section class="page" id="page-saved">
+    <header class="head">
+      <div>
+        <h1>Saved</h1>
+        <p>Your own crosshairs. Stored locally on this computer.</p>
+      </div>
+      <div class="head-tools">
+        <button class="btn ghost" id="btn-folder"><svg><use href="#i-folder"/></svg>Screenshots</button>
+        <button class="btn ghost" id="btn-copy-all" title="Copy every saved crosshair as a list"><svg><use href="#i-list"/></svg>Copy all</button>
+        <button class="btn primary" id="btn-save-2"><svg><use href="#i-save"/></svg>Save current</button>
+      </div>
+    </header>
+    <div class="list" id="saved"></div>
+  </section>
+  <!-- overlay -->
+  <section class="page" id="page-overlay">
+    <div class="editor">
+      <div class="stage-col">
+        <div class="stage" id="ov-stage">
+          <canvas id="ov-view"></canvas>
+          <div class="stage-top">
+            <span class="badge">Real size preview</span>
+          </div>
+          <div class="stage-bottom">
+            <span class="hint"><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>H</kbd> hides or shows it, even in game</span>
+          </div>
+        </div>
+
+        <div class="ov-bar">
+          <button class="ov-toggle" id="ov-toggle">
+            <i class="switch"></i>
+            <span><b>Show on screen</b><small id="ov-state">Off</small></span>
+          </button>
+          <p class="ov-note">Stays on top of every window and lets clicks pass through. Closing CrossKit keeps it running in the taskbar.</p>
+          <button class="btn ghost" id="ov-quit" title="Close the app and the overlay"><svg><use href="#i-power"/></svg><span>Quit</span></button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="tabs" id="ov-source">
+          <button data-src="crosshair">Crosshair</button>
+          <button data-src="shape" class="on">Shape</button>
+          <button data-src="image">Image</button>
+        </div>
+        <div class="controls">
+          <div class="group" data-for="crosshair">
+            <div class="group-head">Your crosshair</div>
+            <p class="ov-help">Shows the crosshair from the editor at real size. Change it there and the overlay follows.</p>
+            <div class="slider">
+              <div class="slider-top"><label>Scale</label><output data-ovout="scale"></output></div>
+              <input type="range" data-ov="scale" min="1" max="4" step="1">
+            </div>
+          </div>
+
+          <div class="group" data-for="shape">
+            <div class="group-head">Shape</div>
+            <div class="ov-shapes" id="ov-shapes"></div>
+          </div>
+
+          <div class="group" data-for="shape">
+            <div class="group-head">Look</div>
+            <div class="swatches ov-colors" id="ov-colors"></div>
+            <div class="slider">
+              <div class="slider-top"><label>Size</label><output data-ovout="size"></output></div>
+              <input type="range" data-ov="size" min="8" max="160" step="1">
+            </div>
+            <div class="slider">
+              <div class="slider-top"><label>Line thickness</label><output data-ovout="thick"></output></div>
+              <input type="range" data-ov="thick" min="1" max="8" step="1">
+            </div>
+            <div class="check" data-ovcheck="outline">Black outline<i class="switch"></i></div>
+            <div class="check" data-ovcheck="dot">Center dot<i class="switch"></i></div>
+            <div class="check" data-ovcheck="headAim" data-shape-only="stick" title="Moves the figure so its head sits exactly on the screen centre">Aim with the head<i class="switch"></i></div>
+          </div>
+
+          <div class="group" data-for="image">
+            <div class="group-head">Your image</div>
+            <p class="ov-help" id="ov-image-name"></p>
+            <button class="btn ghost wide" id="ov-image"><svg><use href="#i-image"/></svg>Choose image…</button>
+            <p class="ov-help faint">or drop one anywhere on this page</p>
+            <div class="slider">
+              <div class="slider-top"><label>Size</label><output data-ovout="imgSize"></output></div>
+              <input type="range" data-ov="imgSize" min="8" max="400" step="1">
+            </div>
+          </div>
+
+          <div class="group" data-for="crosshair shape image">
+            <div class="group-head">Position<button class="link" id="ov-center">Center</button></div>
+            <div class="slider">
+              <div class="slider-top"><label>Opacity</label><output data-ovout="opacity"></output></div>
+              <input type="range" data-ov="opacity" min="0.1" max="1" step="0.05">
+            </div>
+            <div class="slider">
+              <div class="slider-top"><label>Move left / right</label><output data-ovout="dx"></output></div>
+              <input type="range" data-ov="dx" min="-300" max="300" step="1">
+            </div>
+            <div class="slider">
+              <div class="slider-top"><label>Move up / down</label><output data-ovout="dy"></output></div>
+              <input type="range" data-ov="dy" min="-300" max="300" step="1">
+            </div>
+          </div>
+
+          <div class="group" data-for="crosshair shape image">
+            <div class="group-head">Behavior</div>
+            <div class="check" data-ovcheck="hideAds">Hide while holding right click<i class="switch"></i></div>
+            <p class="ov-help faint">Keeps it out of the way of scopes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg-import">
+  <form method="dialog">
+    <h3>Import a crosshair</h3>
+    <p>Paste a code from the game or any crosshair site. Several codes, one per line, go straight to Saved.</p>
+    <textarea id="import-text" class="mono" rows="3" spellcheck="false" placeholder="0;P;c;5;h;0;0l;4;0o;2;0a;1;0f;0;1b;0"></textarea>
+    <div class="err" id="import-err"></div>
+    <div class="dlg-foot">
+      <button class="btn ghost" value="cancel" formnovalidate>Cancel</button>
+      <button class="btn primary" id="import-ok" value="ok">Import</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-save">
+  <form method="dialog">
+    <h3>Save crosshair</h3>
+    <p>Saving with an existing name replaces it.</p>
+    <input id="save-name" maxlength="40" placeholder="e.g. Main, Operator, Night maps">
+    <div class="dlg-foot">
+      <button class="btn ghost" value="cancel" formnovalidate>Cancel</button>
+      <button class="btn primary" id="save-ok" value="ok">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-keys">
+  <form method="dialog">
+    <h3>Keyboard shortcuts</h3>
+    <p>Work anywhere in the app unless you're typing.</p>
+    <div class="keys">
+      <span>Fire / spray test</span><span><kbd>Space</kbd> or hold click</span>
+      <span>Movement test</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span>
+      <span>Copy code</span><span><kbd>C</kbd></span>
+      <span>Random crosshair</span><span><kbd>R</kbd></span>
+      <span>Import from clipboard</span><span><kbd>Ctrl</kbd> <kbd>V</kbd></span>
+      <span>Save</span><span><kbd>Ctrl</kbd> <kbd>S</kbd></span>
+      <span>Undo</span><span><kbd>Ctrl</kbd> <kbd>Z</kbd></span>
+      <span>Switch page</span><span><kbd>1</kbd> – <kbd>5</kbd></span>
+      <span>Hide / show overlay</span><span><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>H</kbd></span>
+      <span>This list</span><span><kbd>?</kbd></span>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn primary" value="ok">Got it</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script src="crosshair.js"></script>
+<script src="library.js"></script>
+<script src="overlay.js"></script>
+<script src="pros.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
