@@ -374,6 +374,7 @@ const overlay = {
 
     $('ov-toggle').addEventListener('click', () => this.toggle());
     $('ov-image').addEventListener('click', () => this.pickImage());
+    $('ov-image-clear').addEventListener('click', () => this.clearImage());
     $('ov-center').addEventListener('click', () => this.set({ dx: 0, dy: 0 }));
     $('ov-quit').addEventListener('click', () => {
       if (inApp()) backend('quit');
@@ -443,7 +444,8 @@ const overlay = {
     document.querySelectorAll('#page-overlay [data-ovcheck]').forEach((el) =>
       el.querySelector('.switch').classList.toggle('on', Boolean(o[el.dataset.ovcheck])));
 
-    $('ov-image-name').textContent = o.imageName || 'PNG with a transparent background works best';
+    $('ov-image-name').textContent = (o.image && o.imageName) || 'PNG with a transparent background works best';
+    $('ov-image-clear').hidden = !o.image;
 
     $('ov-toggle').classList.toggle('on', this.on);
     $('ov-state').textContent = this.on ? 'On screen' : 'Off';
@@ -539,6 +541,18 @@ const overlay = {
   setImage(url, name) {
     backend('set_pref', 'overlayImage', url);
     this.set({ source: 'image', image: url, imageName: name });
+  },
+
+  // forget the picked image completely, including the copy in the settings file
+  async clearImage() {
+    if (this.on && this.o.source === 'image') {
+      this.on = false;
+      await backend('overlay_hide');
+    }
+    this.img = null;
+    backend('set_pref', 'overlayImage', null);
+    this.set({ image: null, imageName: '' });
+    toast('Image removed');
   },
 
   loadImage(url) {

@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 
 APP = "CrossKit"
-VERSION = "1.6.3"
+VERSION = "1.7.0"
 
 ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 UI = ROOT / "ui" / "index.html"
@@ -273,7 +273,7 @@ class Api:
         update_store(lambda d: d.update(last=code))
 
     def set_pref(self, key, value):
-        if key in ("overlay", "overlayImage", "favorites", "pinned", "mouse"):
+        if key in ("overlay", "overlayImage", "favorites", "pinned", "mouse", "stageBg"):
             update_store(lambda d: d.update({key: value}))
 
     def save_crosshair(self, name, code):
@@ -408,8 +408,42 @@ def set_topmost(on):
         return False
 
 
+def center_window(hwnd):
+    """Middle of the screen the cursor is on, shrunk first if that screen
+    is too small for the default size."""
+    from ctypes import wintypes
+
+    class MONITORINFO(ctypes.Structure):
+        _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", wintypes.RECT),
+                    ("rcWork", wintypes.RECT), ("dwFlags", wintypes.DWORD)]
+
+    user32 = ctypes.windll.user32
+    user32.MonitorFromPoint.restype = ctypes.c_void_p
+    user32.MonitorFromPoint.argtypes = [wintypes.POINT, wintypes.DWORD]
+    user32.GetMonitorInfoW.argtypes = [ctypes.c_void_p, ctypes.POINTER(MONITORINFO)]
+    user32.GetWindowRect.argtypes = [ctypes.c_void_p, ctypes.POINTER(wintypes.RECT)]
+
+    cursor = wintypes.POINT()
+    user32.GetCursorPos(ctypes.byref(cursor))
+    info = MONITORINFO()
+    info.cbSize = ctypes.sizeof(MONITORINFO)
+    if not user32.GetMonitorInfoW(user32.MonitorFromPoint(cursor, 2), ctypes.byref(info)):
+        return
+    work = info.rcWork
+    rect = wintypes.RECT()
+    user32.GetWindowRect(hwnd, ctypes.byref(rect))
+
+    area_w, area_h = work.right - work.left, work.bottom - work.top
+    w = min(rect.right - rect.left, area_w - 40)
+    h = min(rect.bottom - rect.top, area_h - 40)
+    x = work.left + (area_w - w) // 2
+    y = work.top + (area_h - h) // 2
+    user32.SetWindowPos.argtypes = [ctypes.c_void_p, ctypes.c_void_p] + [ctypes.c_int] * 4 + [ctypes.c_uint]
+    user32.SetWindowPos(hwnd, None, x, y, w, h, 0x0004 | 0x0010 | 0x4000)  # NOZORDER | NOACTIVATE | ASYNC
+
+
 def style_window():
-    """Dark title bar + icon on Windows. Silently does nothing elsewhere."""
+    """Centre the window, dark title bar + icon. Windows only."""
     if os.name != "nt":
         return
     try:
@@ -417,6 +451,7 @@ def style_window():
         hwnd = main_hwnd()
         if not hwnd:
             return
+        center_window(hwnd)
 
         dwm = ctypes.windll.dwmapi
         dark = ctypes.c_int(1)
@@ -458,12 +493,23 @@ def main():
 
     overlay = OverlayProcess()
     api = Api(overlay)
+    width, height = 1200, 780
+    x = y = None
+    try:
+        screen = webview.screens[0]
+        width, height = min(width, screen.width - 40), min(height, screen.height - 80)
+        x, y = screen.x + (screen.width - width) // 2, screen.y + (screen.height - height) // 2
+    except Exception:
+        pass  # let the OS place it, style_window() centres it on Windows anyway
+
     window = webview.create_window(
         TITLE,
         url=str(UI),
         js_api=api,
-        width=1200,
-        height=780,
+        width=width,
+        height=height,
+        x=x,
+        y=y,
         min_size=(940, 600),
         background_color=BG,
     )

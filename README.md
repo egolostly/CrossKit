@@ -4,7 +4,7 @@
 
 <br>
 
-![Version](https://img.shields.io/badge/version-1.6.3-4cc2ff?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.7.0-4cc2ff?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20macOS%20%7C%20linux-1d2028?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT%20%2B%20attribution-22c55e?style=flat-square)
@@ -37,7 +37,7 @@ No account, no telemetry, no installer – your data stays in one JSON file in y
 
 ### Editor
 - Preview at **real in-game size** – or zoomed 2× and 4× for detail
-- Clean all-black canvas, nothing in the way of the crosshair
+- Preview on **black, white or any colour** – check that outlines still read on bright walls
 - Spray and movement simulation – watch the error lines react
 - Every primary setting: color and custom hex, outlines, center dot, inner and outer lines, separate vertical length
 - Movement and firing error with **multipliers (0 – 3.000)** exactly like the game – drag or type the value
@@ -97,7 +97,19 @@ No account, no telemetry, no installer – your data stays in one JSON file in y
 
 ### Download
 
-Grab `CrossKit.exe` from the **[latest release](../../releases/latest)** and run it. Windows 10 and 11 already include everything it needs.
+From the **[latest release](../../releases/latest)** pick one:
+
+| File | |
+|---|---|
+| **`CrossKit-Setup.exe`** | Installer – adds a desktop shortcut, a Start menu entry and an uninstaller. No admin rights needed |
+| `CrossKit.exe` | Portable – a single file, nothing to install |
+
+The installer asks for:
+
+- **Desktop shortcut** – ticked by default
+- **Start with Windows** – optional, unticked by default. Keeps the overlay ready in the tray
+
+Windows 10 and 11 already include everything it needs. Your settings live in your home folder, so updating or uninstalling keeps them.
 
 > Windows SmartScreen may warn about an unsigned app the first time. Click **More info → Run anyway**, or build it yourself from source below.
 

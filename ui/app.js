@@ -404,6 +404,7 @@ function realPx() {
 const stage = {
   canvas: null,
   zoom: 1,
+  bg: '#000000',
   spread: 0,
   firing: false,
   keys: new Set(),
@@ -427,7 +428,37 @@ const stage = {
       $('size-note').textContent = this.zoom === 1 ? 'Real in-game size' : `Zoomed ${this.zoom}×`;
     });
 
+    this.initBackground();
     requestAnimationFrame((t) => this.frame(t));
+  },
+
+  // Black, white or any colour behind the preview – a black outline
+  // vanishes on black, so you want to check it on something bright too.
+  initBackground() {
+    const pick = $('bg-pick');
+    const color = $('bg-color');
+    let saveTimer;
+
+    const apply = (mode, custom, remember = true) => {
+      if (custom) color.value = custom;
+      this.bg = mode === 'white' ? '#ffffff' : mode === 'custom' ? color.value : '#000000';
+      pick.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.bg === mode));
+      $('bg-swatch').style.background = mode === 'custom' ? color.value : '';
+      $('stage').style.background = this.bg;
+      this.dirty = true;
+      if (remember) {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => backend('set_pref', 'stageBg', { mode, color: color.value }), 400);
+      }
+    };
+
+    pick.querySelectorAll('button').forEach((b) => {
+      b.addEventListener('click', () => apply(b.dataset.bg));
+    });
+    color.addEventListener('input', () => apply('custom'));
+    this.setBackground = (saved) => {
+      if (saved && saved.mode) apply(saved.mode, saved.color, false);
+    };
   },
 
   resize() {
@@ -451,7 +482,7 @@ const stage = {
     if (this.dirty && $('page-editor').classList.contains('on')) {
       this.dirty = false;
       const c = this.canvas.getContext('2d');
-      c.fillStyle = '#000';
+      c.fillStyle = this.bg;
       c.fillRect(0, 0, this.canvas.width, this.canvas.height);
       const px = realPx() * this.zoom;
       const cx = Math.floor(this.canvas.width / 2);
@@ -863,6 +894,7 @@ async function boot() {
   favorites = new Set(data.favorites || []);
   overlay.init(data.overlay, data.overlayImage);
   pros.init(data.mouse);
+  stage.setBackground(data.stageBg);
 
   const last = data.last && decode(data.last);
   if (last && undoStack.length === 1) {

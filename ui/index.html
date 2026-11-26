@@ -64,7 +64,7 @@
       <svg><use href="#i-pin"/></svg><span>Always on top</span><i class="switch"></i>
     </button>
     <div class="side-meta">
-      <span class="version" id="version">v1.6.3</span>
+      <span class="version" id="version">v1.7.0</span>
       <button class="icon-btn" id="btn-keys" title="Keyboard shortcuts (?)"><svg><use href="#i-keyboard"/></svg></button>
     </div>
   </div>
@@ -79,10 +79,17 @@
           <canvas id="view"></canvas>
           <div class="stage-top">
             <span class="badge" id="size-note">Real in-game size</span>
-            <div class="seg" id="zoom-pick" title="Preview zoom">
-              <button data-zoom="1" class="on">Real</button>
-              <button data-zoom="2">2×</button>
-              <button data-zoom="4">4×</button>
+            <div class="stage-tools">
+              <div class="seg bg-pick" id="bg-pick" title="Preview background">
+                <button data-bg="black" class="on" title="Black background"><i class="sw" style="background:#000"></i></button>
+                <button data-bg="white" title="White background"><i class="sw" style="background:#fff"></i></button>
+                <button data-bg="custom" title="Pick any colour"><i class="sw custom" id="bg-swatch"></i><input type="color" id="bg-color" value="#5b7a99" tabindex="-1"></button>
+              </div>
+              <div class="seg" id="zoom-pick" title="Preview zoom">
+                <button data-zoom="1" class="on">Real</button>
+                <button data-zoom="2">2×</button>
+                <button data-zoom="4">4×</button>
+              </div>
             </div>
           </div>
           <div class="stage-bottom">
@@ -230,7 +237,7 @@
             <i class="switch"></i>
             <span><b>Show on screen</b><small id="ov-state">Off</small></span>
           </button>
-          <p class="ov-note">Stays on top of every window and lets clicks pass through. Closing CrossKit keeps it running in the taskbar.</p>
+          <p class="ov-note">Stays on top of every window and lets clicks pass through. Closing CrossKit hides it to the system tray.</p>
           <button class="btn ghost" id="ov-quit" title="Close the app and the overlay"><svg><use href="#i-power"/></svg><span>Quit</span></button>
         </div>
       </div>
@@ -276,6 +283,7 @@
             <div class="group-head">Your image</div>
             <p class="ov-help" id="ov-image-name"></p>
             <button class="btn ghost wide" id="ov-image"><svg><use href="#i-image"/></svg>Choose image…</button>
+            <button class="btn ghost wide danger" id="ov-image-clear" hidden><svg><use href="#i-trash"/></svg>Remove image</button>
             <p class="ov-help faint">or drop one anywhere on this page</p>
             <div class="slider">
               <div class="slider-top"><label>Size</label><output data-ovout="imgSize"></output></div>
